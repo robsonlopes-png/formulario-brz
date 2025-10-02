@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabela de Preços Unitários - BRZ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #F1E500, #FFED00);
+            color: #333;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        .form-content {
+            padding: 30px;
+        }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .progress {
+            width: 100%;
+            height: 12px;
+            background: #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #F1E500;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .regionais-legend {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .regionais-legend h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .regionais-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .regional-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .regional-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        
+        .regional-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .regional-code {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .regional-name {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 8px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            font-size: 12px;
+        }
+        
+        td {
+            font-size: 11px;
+        }
+        
+        .categoria-cell {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .servico-cell {
+            max-width: 300px;
+        }
+        
+        .unidade-cell {
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .preco-input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 11px;
+        }
+        
+        .preco-input:focus {
+            outline: none;
+            border-color: #F1E500;
+            box-shadow: 0 0 0 2px rgba(241, 229, 0, 0.2);
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .stats {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        .btn-primary {
+            background: #F1E500;
+            color: #333;
+        }
+        
+        .btn-primary:hover {
+            background: #d4c700;
+        }
+        
+        .gmrj { background-color: #3b82f6; }
+        .gmp { background-color: #10b981; }
+        .gmg { background-color: #f59e0b; }
+        .gmc { background-color: #ef4444; }
+        .gmsp { background-color: #8b5cf6; }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .form-content {
+                padding: 20px;
+            }
+            
+            .regionais-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Tabela de Preços Unitários - Mão de Obra Empreiteiros</h1>
+            <p>BRZ Empreendimentos - Preenchimento por Gestão Metropolitana</p>
+        </div>
+        
+        <div class="form-content">
+            <div class="progress-bar">
+                <div class="progress-text">
+                    <span>Progresso do Preenchimento</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="regionais-legend">
+                <h3>Gestões Metropolitanas BRZ:</h3>
+                <div class="regionais-grid">
+                    <div class="regional-item">
+                        <div class="regional-color gmrj"></div>
+                        <div class="regional-info">
+                            <span class="regional-code">GMRJ</span>
+                            <span class="regional-name">Gestão Metropolitana Rio de Janeiro</span>
+                        </div>
+                    </div>
+                    <div class="regional-item">
+                        <div class="regional-color gmp"></div>
+                        <div class="regional-info">
+                            <span class="regional-code">GMP</span>
+                            <span class="regional-name">Gestão Metropolitana Piracicaba</span>
+                        </div>
+                    </div>
+                    <div class="regional-item">
+                        <div class="regional-color gmg"></div>
+                        <div class="regional-info">
+                            <span class="regional-code">GMG</span>
+                            <span class="regional-name">Gestão Metropolitana Minas Gerais</span>
+                        </div>
+                    </div>
+                    <div class="regional-item">
+                        <div class="regional-color gmc"></div>
+                        <div class="regional-info">
+                            <span class="regional-code">GMC</span>
+                            <span class="regional-name">Gestão Metropolitana Campinas</span>
+                        </div>
+                    </div>
+                    <div class="regional-item">
+                        <div class="regional-color gmsp"></div>
+                        <div class="regional-info">
+                            <span class="regional-code">GMSP</span>
+                            <span class="regional-name">Gestão Metropolitana São Paulo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="precos-form">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Categoria</th>
+                                <th style="width: 15%;">Subcategoria</th>
+                                <th style="width: 35%;">Descrição do Serviço</th>
+                                <th style="width: 8%;">Und.</th>
+                                <th style="width: 10%;">GMRJ</th>
+                                <th style="width: 10%;">GMP</th>
+                                <th style="width: 10%;">GMG</th>
+                                <th style="width: 10%;">GMC</th>
+                                <th style="width: 10%;">GMSP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="servicos-tbody">
+                            <!-- Serviços serão inseridos aqui via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+            
+            <div class="actions">
+                <div class="stats">
+                    <p>Total de serviços: <span id="total-servicos">0</span></p>
+                    <p>Campos preenchidos: <span id="campos-preenchidos">0</span></p>
+                </div>
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="limparTudo()">
+                        Limpar Tudo
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="exportarDados()">
+                        📊 Exportar CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const servicos = [
+            // Fundações
+            { categoria: '1. Fundações', subcategoria: '1.1 Estaqueamento (Hélice)', servico: 'SERVIÇO DE EXECUÇÃO DE ESTACA HÉLICE CONTÍNUA', unidade: 'M' },
+            { categoria: '1. Fundações', subcategoria: '1.2 Estaqueamento (Trado)', servico: 'SERVIÇO DE EXECUÇÃO DE ESTACA TRADO', unidade: 'M' },
+            { categoria: '1. Fundações', subcategoria: '1.3 Estaqueamento (Cravada)', servico: 'SERVIÇO DE EXECUÇÃO DE ESTACA CRAVADA', unidade: 'M' },
+            { categoria: '1. Fundações', subcategoria: '1.4 Estaqueamento (Pré-Moldada)', servico: 'SERVIÇO DE EXECUÇÃO DE CORTE DE ESTACA TIPO PRÉ MOLDADA CIRCULAR ATÉ 40CM', unidade: 'UN' },
+            { categoria: '1. Fundações', subcategoria: '1.5 Estaqueamento (Outros)', servico: 'SERVIÇO DE EXECUÇÃO DE SAPATA', unidade: 'M' },
+            { categoria: '1. Fundações', subcategoria: '1.6 Escavação/Bota-fora', servico: 'SERVIÇO DE EXECUÇÃO DE ESCAVAÇÃO MECÂNICA DE VALAS', unidade: 'M3' },
+            { categoria: '1. Fundações', subcategoria: '1.7 Ensaios', servico: 'SERVIÇO DE EXECUÇÃO DE ENSAIO PIT', unidade: 'UN' },
+            { categoria: '1. Fundações', subcategoria: '1.8 Apiloamento/Reaterro', servico: 'SERVIÇO DE EXECUÇÃO DE REATERRO COMPACTADO EM CAMADAS', unidade: 'M3' },
+            { categoria: '1. Fundações', subcategoria: '1.9 Blocos/Baldrames', servico: 'SERVIÇO DE EXECUÇÃO DE FUNDAÇÃO RASA - BLOCOS E BALDRAMES', unidade: 'M3' },
+            
+            // Estrutura
+            { categoria: '2. Estrutura', subcategoria: '2.1 Estrutura de Concreto', servico: 'SERVIÇO DE EXECUÇÃO DE ESTRUTURA DE CONCRETO ARMADO', unidade: 'M3' },
+            { categoria: '2. Estrutura', subcategoria: '2.2 Alvenaria Estrutural', servico: 'SERVIÇO DE EXECUÇÃO DE ALVENARIA ESTRUTURAL', unidade: 'M2' },
+            { categoria: '2. Estrutura', subcategoria: '2.3 Lajes', servico: 'SERVIÇO DE EXECUÇÃO DE LAJE MACIÇA', unidade: 'M2' },
+            
+            // Vedações
+            { categoria: '3. Vedações', subcategoria: '3.1 Alvenaria de Vedação', servico: 'SERVIÇO DE EXECUÇÃO DE ALVENARIA DE VEDAÇÃO', unidade: 'M2' },
+            { categoria: '3. Vedações', subcategoria: '3.2 Revestimentos', servico: 'SERVIÇO DE EXECUÇÃO DE CHAPISCO', unidade: 'M2' },
+            { categoria: '3. Vedações', subcategoria: '3.3 Impermeabilização', servico: 'SERVIÇO DE EXECUÇÃO DE IMPERMEABILIZAÇÃO', unidade: 'M2' },
+            
+            // Cobertura
+            { categoria: '4. Cobertura', subcategoria: '4.1 Estrutura de Cobertura', servico: 'SERVIÇO DE EXECUÇÃO DE ESTRUTURA DE MADEIRA PARA TELHADO', unidade: 'M2' },
+            { categoria: '4. Cobertura', subcategoria: '4.2 Telhamento', servico: 'SERVIÇO DE EXECUÇÃO DE TELHAMENTO COM TELHA CERÂMICA', unidade: 'M2' },
+            
+            // Redes Hidrossanitárias
+            { categoria: '5. Redes Hidrossanitárias', subcategoria: '5.1 Instalações Hidráulicas', servico: 'SERVIÇO DE EXECUÇÃO DE REDE DE ÁGUA FRIA', unidade: 'M' },
+            { categoria: '5. Redes Hidrossanitárias', subcategoria: '5.2 Instalações Sanitárias', servico: 'SERVIÇO DE EXECUÇÃO DE REDE DE ESGOTO', unidade: 'M' },
+            
+            // Instalações Elétricas
+            { categoria: '6. Instalações Elétricas', subcategoria: '6.1 Eletrodutos e Fiação', servico: 'SERVIÇO DE EXECUÇÃO DE ELETRODUTOS E FIAÇÃO', unidade: 'APTO' },
+            { categoria: '6. Instalações Elétricas', subcategoria: '6.2 Quadros Elétricos', servico: 'SERVIÇO DE EXECUÇÃO DE MONTAGEM QM', unidade: 'APTO' },
+            
+            // Esquadrias
+            { categoria: '7. Esquadrias', subcategoria: '7.1 Esquadrias de Alumínio', servico: 'SERVIÇO DE INSTALAÇÃO DE JANELA DE ALUMÍNIO', unidade: 'UN' },
+            { categoria: '7. Esquadrias', subcategoria: '7.2 Esquadrias de Madeira', servico: 'SERVIÇO DE INSTALAÇÃO DE KIT PORTA PRONTA', unidade: 'UN' },
+            
+            // Acabamentos
+            { categoria: '8. Acabamentos', subcategoria: '8.1 Pisos e Revestimentos', servico: 'SERVIÇO DE EXECUÇÃO DE PISO CERÂMICO', unidade: 'M2' },
+            { categoria: '8. Acabamentos', subcategoria: '8.2 Pintura', servico: 'SERVIÇO DE EXECUÇÃO DE PINTURA INTERNA', unidade: 'M2' }
+        ];
+
+        const regionais = ['GMRJ', 'GMP', 'GMG', 'GMC', 'GMSP'];
+
+        function inicializarFormulario() {
+            const tbody = document.getElementById('servicos-tbody');
+            document.getElementById('total-servicos').textContent = servicos.length;
+            
+            servicos.forEach((servico, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="categoria-cell">${servico.categoria}</td>
+                    <td>${servico.subcategoria}</td>
+                    <td class="servico-cell">${servico.servico}</td>
+                    <td class="unidade-cell">${servico.unidade}</td>
+                    ${regionais.map(regional => 
+                        `<td><input type="text" class="preco-input" placeholder="R$ 0,00" 
+                                   id="${index}-${regional}" 
+                                   onchange="atualizarProgresso()" 
+                                   onblur="formatarMoeda(this)"></td>`
+                    ).join('')}
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function formatarMoeda(input) {
+            let valor = input.value.replace(/[^\d,]/g, '');
+            if (valor) {
+                valor = valor.replace(',', '.');
+                const numero = parseFloat(valor);
+                if (!isNaN(numero)) {
+                    input.value = numero.toLocaleString('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL' 
+                    });
+                }
+            }
+        }
+
+        function atualizarProgresso() {
+            const totalCampos = servicos.length * regionais.length;
+            const inputs = document.querySelectorAll('.preco-input');
+            const preenchidos = Array.from(inputs).filter(input => input.value.trim() !== '').length;
+            
+            const porcentagem = Math.round((preenchidos / totalCampos) * 100);
+            
+            document.getElementById('progress-percent').textContent = porcentagem + '%';
+            document.getElementById('progress-fill').style.width = porcentagem + '%';
+            document.getElementById('campos-preenchidos').textContent = preenchidos;
+        }
+
+        function limparTudo() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                document.querySelectorAll('.preco-input').forEach(input => {
+                    input.value = '';
+                });
+                atualizarProgresso();
+            }
+        }
+
+        function exportarDados() {
+            let csvContent = "Categoria;Subcategoria;Serviço;Unidade;GMRJ;GMP;GMG;GMC;GMSP\n";
+            
+            servicos.forEach((servico, index) => {
+                let linha = `"${servico.categoria}";"${servico.subcategoria}";"${servico.servico}";"${servico.unidade}";`;
+                regionais.forEach(regional => {
+                    const input = document.getElementById(`${index}-${regional}`);
+                    linha += `"${input ? input.value : ''}";`;
+                });
+                csvContent += linha + "\n";
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "tabela_precos_brz_regionais.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('Dados exportados em CSV! Arquivo baixado automaticamente.');
+        }
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', inicializarFormulario);
+    </script>
+</body>
+</html>
